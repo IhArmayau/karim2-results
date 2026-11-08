@@ -319,7 +319,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Karim II War Room Postgres Backend running on port ${PORT}`);
+  console.log(`Karim II Results Backend running on port ${PORT}`);
   const SELF_URL = process.env.SELF_URL || process.env.RENDER_EXTERNAL_URL;
   if (SELF_URL) {
     setInterval(() => {
