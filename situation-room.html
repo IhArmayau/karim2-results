@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karim II Constituency Situation Room</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:#f6f7f5;color:#111}
+.top{background:#0A3B2E;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #D4A017;position:sticky;top:0;z-index:20}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo{width:40px;height:40px;border-radius:10px;object-fit:cover;display:block;flex-shrink:0}
+.logo-row b{font-size:15px;line-height:1.1;display:block}
+.logo-row span{font-size:12px;color:#cbd5e1}
+.wrap{max-width:900px;margin:0 auto;padding:14px 12px 30px}
+.hero{background:#0A3B2E;color:#fff;padding:20px 16px;border-radius:16px}
+.hero h1{font-size:24px;line-height:1.1}
+.hero p{color:#cbd5e1;font-size:13px;margin-top:6px}
+.card{background:#fff;border-radius:16px;padding:16px;margin-top:12px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+label{font-size:11px;font-weight:700;text-transform:uppercase;color:#333;display:block;margin-bottom:5px}
+input,select{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;font-size:14px;background:#fff}
+input:focus,select:focus{outline:none;border-color:#0A3B2E}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.party-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(min-width:600px){ .party-grid{grid-template-columns:repeat(6,1fr);} .grid2{grid-template-columns:1fr 1fr} }
+.party-grid div{background:#f9faf9;padding:8px;border-radius:10px;border:1px solid #eee}
+.party-grid span{font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:4px}
+.party-grid input{padding:8px}
+.btn-green{background:#0A3B2E;color:#fff;border:none;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer}
+.btn-dark{background:#fff;color:#111;border:1px solid #ddd;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;text-decoration:none;font-size:12px}
+.btn-red{background:#fff;color:#c00;border:1px solid #f5c6c6;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;font-size:12px}
+#statusMessage{margin-top:12px;padding:12px;border-radius:12px;font-size:13px;font-weight:700;text-align:center;display:none}
+#authModal{position:fixed;inset:0;background:#0A3B2E;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+.auth-box{background:#fff;border-radius:16px;max-width:380px;width:100%;padding:22px;text-align:center}
+.auth-box h2{font-size:18px;margin:10px 0 4px}
+.auth-box p{font-size:12px;color:#666}
+.live-badge{background:#D4A017;color:#0A3B2E;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- PIN -->
+<div id="authModal">
+  <div class="auth-box">
+    <div style="width:56px;height:56px;background:#FFF8E1;border:2px solid #D4A017;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto;">🔒</div>
+    <h2>SITUATION ROOM</h2>
+    <p>Authorized Clerks Only</p>
+    <div style="margin-top:16px;">
+      <input type="password" id="pinInput" placeholder="Enter Operator PIN (2027)" style="text-align:center;letter-spacing:4px;">
+      <button onclick="verifyPin()" class="btn-green" style="width:100%;margin-top:10px;">Authenticate Console</button>
+    </div>
+    <p id="authError" style="color:#c00;font-weight:700;font-size:12px;margin-top:8px;display:none;">Invalid PIN! Access Denied.</p>
+    <p style="margin-top:12px;font-size:11px;color:#999;">Karim II Constituency • 2027 Election</p>
+  </div>
+</div>
+
+<!-- TOP -->
+<div class="top">
+  <div class="logo-row"><img class="logo" src="/icon-192.png" alt="Karim II"><div><b>Karim II Constituency</b><span>Situation Room</span></div></div>
+  <div class="live-badge">● LIVE</div>
+</div>
+
+<div class="wrap" id="mainContent" style="display:none;">
+  <div class="hero">
+    <h1>Karim II Constituency<br>Situation Room</h1>
+    <p>Voice Report Logging (18 INEC Parties) • Hon. Anas Shuaibu Didango - APC</p>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <a href="/" target="_blank" class="btn-dark" style="background:#fff;">Open Live Dashboard ➔</a>
+      <button onclick="logoutSituationRoom()" class="btn-red">🔒 Logout</button>
+    </div>
+    <p style="margin-top:12px;font-size:12px;color:#cbd5e1;">Submitted: <b id="submittedCount" style="color:#D4A017;">—</b> PUs &nbsp;•&nbsp; Last update: <span id="lastUpdate">—</span></p>
+  </div>
+
+  <form id="relayForm" onsubmit="submitRelayData(event)" class="card">
+    <input type="hidden" id="constituency" value="Karim II">
+    <div class="grid2">
+      <div><label>Polling Unit ID *</label><input type="text" id="pu_id" required placeholder="e.g. 001, 014"></div>
+      <div><label>Ward (Karim II Constituency) *</label>
+        <select id="ward" required>
+          <option value="Amar">Amar Ward</option>
+          <option value="Andamin">Andamin Ward</option>
+          <option value="Bachama">Bachama Ward</option>
+          <option value="Darofai">Darofai Ward</option>
+          <option value="Didango">Didango Ward ⭐</option>
+          <option value="Kwanchi">Kwanchi Ward</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid3" style="margin-top:14px;">
+      <div><label>BVAS Accredited *</label><input type="number" id="bvas_accredited" required min="0" placeholder="0"></div>
+      <div><label>Total Votes Cast *</label><input type="number" id="total_votes" required min="0" placeholder="0"></div>
+      <div><label>Rejected Votes</label><input type="number" id="rejected_votes" min="0" value="0"></div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <label style="color:#0A3B2E;">Official INEC Registered Parties (Phone Dictation)</label>
+      <div class="party-grid">
+        <div><span>A</span><input type="number" id="score_A" min="0" value="0"></div>
+        <div><span>AA</span><input type="number" id="score_AA" min="0" value="0"></div>
+        <div><span>AAC</span><input type="number" id="score_AAC" min="0" value="0"></div>
+        <div><span>ADC</span><input type="number" id="score_ADC" min="0" value="0"></div>
+        <div><span>ADP</span><input type="number" id="score_ADP" min="0" value="0"></div>
+        <div><span>APC</span><input type="number" id="score_APC" min="0" value="0" style="border-color:#D4A017;background:#FFF8E1;font-weight:700;"></div>
+        <div><span>APGA</span><input type="number" id="score_APGA" min="0" value="0"></div>
+        <div><span>APM</span><input type="number" id="score_APM" min="0" value="0"></div>
+        <div><span>APP</span><input type="number" id="score_APP" min="0" value="0"></div>
+        <div><span>BP</span><input type="number" id="score_BP" min="0" value="0"></div>
+        <div><span>LP</span><input type="number" id="score_LP" min="0" value="0"></div>
+        <div><span>NNPP</span><input type="number" id="score_NNPP" min="0" value="0"></div>
+        <div><span>NRM</span><input type="number" id="score_NRM" min="0" value="0"></div>
+        <div><span>PDP</span><input type="number" id="score_PDP" min="0" value="0"></div>
+        <div><span>PRP</span><input type="number" id="score_PRP" min="0" value="0"></div>
+        <div><span>SDP</span><input type="number" id="score_SDP" min="0" value="0"></div>
+        <div><span>YPP</span><input type="number" id="score_YPP" min="0" value="0"></div>
+        <div><span>ZLP</span><input type="number" id="score_ZLP" min="0" value="0"></div>
+      </div>
+      <p style="font-size:12px;color:#777;margin-top:8px;">Check: Party votes + Rejected should = Total Votes Cast. Server will flag over-voting if it exceeds BVAS.</p>
+    </div>
+
+    <div style="margin-top:16px;border-top:1px solid #eee;padding-top:14px;">
+      <label>EC8A Sheet Photo (Optional)</label>
+      <input type="file" id="ec8a_photo" accept="image/*">
+      <button type="submit" id="submitBtn" class="btn-green" style="width:100%;margin-top:14px;">💾 Log & Broadcast Result</button>
+    </div>
+  </form>
+
+  <div id="statusMessage"></div>
+  <p style="text-align:center;font-size:11px;color:#999;margin-top:12px;">Data from Accredited Party Agents • Not an Official INEC Declaration • © 2026</p>
+</div>
+
+<script>
+const BACKEND_URL=window.location.origin;
+const AUTHORIZED_PIN="2027";
+const partiesList=['A','AA','AAC','ADC','ADP','APC','APGA','APM','APP','BP','LP','NNPP','NRM','PDP','PRP','SDP','YPP','ZLP'];
+window.addEventListener('DOMContentLoaded',()=>{
+  if(localStorage.getItem('karim2_situation_room_auth')==='true'){
+    document.getElementById('authModal').style.display='none';
+    document.getElementById('mainContent').style.display='block';
+    loadCount();
+  }
+});
+function verifyPin(){
+  const v=document.getElementById('pinInput').value;
+  if(v===AUTHORIZED_PIN){
+    localStorage.setItem('karim2_situation_room_auth','true');
+    document.getElementById('authModal').style.display='none';
+    document.getElementById('mainContent').style.display='block';
+    loadCount();
+  } else {
+    document.getElementById('authError').style.display='block';
+    document.getElementById('pinInput').value='';
+  }
+}
+function logoutSituationRoom(){
+  localStorage.removeItem('karim2_situation_room_auth');
+  document.getElementById('mainContent').style.display='none';
+  document.getElementById('authModal').style.display='flex';
+  document.getElementById('pinInput').value='';
+}
+document.getElementById('pinInput').addEventListener('keypress',e=>{ if(e.key==='Enter') verifyPin(); });
+async function loadCount(){
+  try{
+    const r=await fetch(`${BACKEND_URL}/results?constituency=Karim II`);
+    const d=await r.json();
+    document.getElementById('submittedCount').textContent=(d.results||[]).length+' / 154';
+    document.getElementById('lastUpdate').textContent=new Date().toLocaleTimeString();
+  }catch(e){}
+}
+async function submitRelayData(event){
+  event.preventDefault();
+  const btn=document.getElementById('submitBtn');
+  const alertBox=document.getElementById('statusMessage');
+  btn.disabled=true; btn.innerText='Logging...';
+  try{
+    const formData=new FormData();
+    formData.append('pu_id',document.getElementById('pu_id').value);
+    formData.append('constituency',document.getElementById('constituency').value);
+    formData.append('ward',document.getElementById('ward').value);
+    formData.append('bvas_accredited',document.getElementById('bvas_accredited').value);
+    formData.append('total_votes',document.getElementById('total_votes').value);
+    formData.append('rejected_votes',document.getElementById('rejected_votes').value);
+    const scores={};
+    partiesList.forEach(p=>{ const val=parseInt(document.getElementById(`score_${p}`).value)||0; if(val>0) scores[p]=val; });
+    formData.append('scores',JSON.stringify(scores));
+    const photo=document.getElementById('ec8a_photo').files[0];
+    if(photo) formData.append('photo',photo);
+    const res=await fetch(`${BACKEND_URL}/submit`,{method:'POST',body:formData});
+    const result=await res.json();
+    if(res.ok){
+      alertBox.style.display='block'; alertBox.style.background='#FFF8E1'; alertBox.style.color='#0A3B2E';
+      alertBox.innerText=`Success! PU #${document.getElementById('pu_id').value} logged successfully.`;
+      document.getElementById('relayForm').reset();
+      loadCount();
+    } else throw new Error(result.error||'Submission failed');
+  }catch(e){
+    alertBox.style.display='block'; alertBox.style.background='#fde8e8'; alertBox.style.color='#c00';
+    alertBox.innerText='Error: '+e.message;
+  }finally{ btn.disabled=false; btn.innerText='💾 Log & Broadcast Result'; }
+}
+</script>
+</body>
+</html>
