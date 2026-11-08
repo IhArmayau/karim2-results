@@ -1,0 +1,15 @@
+{
+  "name": "karim2-results",
+  "version": "1.0.0",
+  "description": "Karim II Constituency Results Collation System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
