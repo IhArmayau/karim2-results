@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karim II Constituency - State Assembly Election Results</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A3B2E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:#f6f7f5;color:#111}
+.top{background:#0A3B2E;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #D4A017;position:sticky;top:0;z-index:20}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo{width:40px;height:40px;border-radius:10px;object-fit:cover;display:block;flex-shrink:0}
+.logo-row b{font-size:15px;line-height:1.1;display:block}
+.logo-row span{font-size:12px;color:#cbd5e1}
+.hero{background:#0A3B2E;color:#fff;padding:22px 16px 20px}
+.live{color:#D4A017;font-size:12px;font-weight:700}
+.hero h1{font-size:32px;line-height:1.05;margin:10px 0 6px;font-weight:800}
+.hero p{color:#cbd5e1;font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.card{background:#14573F;border-radius:14px;padding:14px}
+.card b{font-size:26px;display:block;white-space:nowrap}
+.card b span{display:inline !important;font-size:inherit !important;color:#fff !important;margin-top:0 !important}
+.card span{font-size:13px;color:#cbd5e1;display:block;margin-top:6px}
+.progress{height:8px;background:#072A20;border-radius:20px;margin-top:16px;overflow:hidden}
+.progress div{height:100%;background:#D4A017;width:0%}
+.progress-text{font-size:13px;color:#cbd5e1;margin-top:8px}
+.controls{display:flex;gap:10px;padding:12px 12px 0}
+.controls select,.controls button{flex:1;padding:11px;border-radius:10px;border:1px solid #ddd;background:#fff;font-weight:600}
+.controls button{background:#0A3B2E;color:#fff;border:none}
+.section{background:#fff;margin:12px;padding:16px;border-radius:16px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.section small{color:#0A3B2E;font-weight:700;font-size:13px}
+.section h2{font-size:22px;margin-top:2px}
+.badge{background:#0A3B2E;color:#D4A017;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:4px}
+.party{display:flex;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #f0f0f0}
+.party:last-child{border:none}
+.party-info{flex:1}
+.party-logo{width:44px;height:44px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid #eee;flex-shrink:0}
+.party-logo-fallback{width:44px;height:44px;border-radius:8px;background:#0A3B2E;color:#D4A017;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+.party-name{font-size:14px}
+.party-name small{display:block;font-size:11px;color:#777;font-weight:500}
+.bar{height:8px;background:#eee;border-radius:20px;margin-top:6px;overflow:hidden}
+.bar div{height:100%;background:#0A3B2E}
+.candidate{display:flex;gap:12px;align-items:center;background:#FFF8E1;padding:12px;border-radius:12px;margin-top:14px;border:1px solid #FDE68A}
+.candidate img{width:56px;height:56px;border-radius:10px;object-fit:cover;border:2px solid #D4A017}
+.candidate b{font-size:14px}
+.candidate span{font-size:12px;color:#666;display:block}
+.ward-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.ward-grid button{background:#0A3B2E;color:#fff;padding:16px;border-radius:12px;text-align:left;border:none;cursor:pointer}
+.ward-grid button b{display:block}
+.ward-grid button span{color:#d4a017;font-size:12px}
+.ward-grid button.active{outline:3px solid #D4A017;outline-offset:2px}
+.pu{border-bottom:1px solid #f0f0f0;padding:14px 0;cursor:pointer}
+.pu b{font-size:14px}
+.pu p{font-size:12px;color:#666}
+.pu-detail{display:none;background:#f8faf8;padding:12px;border-radius:10px;margin-top:10px;font-size:13px}
+.footer{text-align:center;padding:16px;font-size:11px;color:#999}
+.donut{width:170px;height:170px;border-radius:50%;margin:14px auto 8px;position:relative}
+.donut:after{content:"";position:absolute;inset:38px;background:#fff;border-radius:50%}
+.legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;font-size:12px;font-weight:700}
+.legend span{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:middle}
+.wbar{margin:10px 0}
+.wbar-label{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.wbar-track{height:14px;background:#eee;border-radius:20px;overflow:hidden;margin-top:4px}
+.wbar-fill{height:100%;background:#0A3B2E}
+.show-more{width:100%;padding:12px;background:#f2f3f7;border:1px solid #ddd;border-radius:10px;font-weight:700;color:#0A3B2E;cursor:pointer;margin-top:8px;display:block}
+.filter-banner{display:none;background:#FFF8E1;border:1px solid #FDE68A;color:#0A3B2E;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:700;margin-top:10px}
+.filter-banner button{background:#0A3B2E;color:#fff;border:none;padding:6px 10px;border-radius:8px;margin-left:8px;font-weight:700}
+/* PROFESSIONAL SPLASH SCREEN */
+#splash{position:fixed;inset:0;background:#0A3B2E;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;transition:opacity .5s ease, visibility .5s}
+#splash.hide{opacity:0;visibility:hidden}
+#splash img{width:128px;height:128px;object-fit:cover;border-radius:50%;border:4px solid #D4A017;box-shadow:0 10px 30px rgba(0,0,0,.4);background:#fff}
+#splash .splash-tag{margin-top:18px;background:#D4A017;color:#0A3B2E;font-size:11px;font-weight:800;letter-spacing:1.5px;padding:6px 12px;border-radius:20px}
+#splash h1{color:#fff;font-size:30px;line-height:1.05;margin:14px 0 6px;font-weight:900;letter-spacing:.3px}
+#splash p{color:#cbd5e1;font-size:14px;line-height:1.4}
+#splash .splash-line{width:56px;height:3px;background:#D4A017;border-radius:20px;margin:16px 0}
+#splash .dots{display:flex;gap:6px;margin-top:6px}
+#splash .dots span{width:8px;height:8px;background:#D4A017;border-radius:50%;animation:dot 1s infinite}
+#splash .dots span:nth-child(2){animation-delay:.15s}
+#splash .dots span:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
+#splash .splash-foot{position:absolute;bottom:22px;left:0;right:0;font-size:11px;color:#94a3b8;letter-spacing:.5px}
+</style>
+</head>
+<body>
+
+<!-- PROFESSIONAL SPLASH -->
+<div id="splash">
+  <img src="/anas.jpg" alt="Hon. Anas Didango" onerror="this.src='/icon-192.png'">
+  <div class="splash-tag">● LIVE • TARABA STATE</div>
+  <h1>KARIM II<br>RESULTS</h1>
+  <p>Karim II Constituency<br>State Assembly Election</p>
+  <div class="splash-line"></div>
+  <div class="dots"><span></span><span></span><span></span></div>
+  <div style="margin-top:10px;font-size:12px;color:#cbd5e1;">Loading live results...</div>
+  <div class="splash-foot">AMAR • ANDAMIN • BACHAMA • DAROFAI • DIDANGO • KWANCHI</div>
+</div>
+
+<div class="top">
+  <div class="logo-row"><img class="logo" src="/icon-192.png" alt="Karim II"><div><b>Karim II Constituency</b><span>State Assembly election results</span></div></div>
+  <div style="background:#D4A017;color:#0A3B2E;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:700;">● LIVE</div>
+</div>
+
+<div class="hero">
+  <div class="live">● LIVE RESULTS • UPDATES EVERY MINUTE</div>
+  <h1>Karim II<br>Constituency</h1>
+  <p>Amar • Andamin • Bachama • Darofai • Didango • Kwanchi</p>
+  <div class="grid">
+    <div class="card"><b>6</b><span>Wards</span></div>
+    <div class="card"><b>154</b><span>Polling Units</span></div>
+    <div class="card"><b style="font-size:20px;white-space:nowrap;"><span id="heroPUs">0</span> / 154</b><span>Polling units reported</span></div>
+    <div class="card"><b id="heroTotalVotes" style="font-size:20px;white-space:nowrap;">0</b><span>Total votes counted</span></div>
+  </div>
+  <div class="progress"><div id="heroProgressBar"></div></div>
+  <div class="progress-text"><span id="heroProgressText">0 / 154 PUs - 0% Reported</span> • <span id="heroLeaderText">Waiting for first result...</span></div>
+</div>
+
+<div class="controls">
+  <select id="wardFilter" onchange="onWardDropdownChange()">
+    <option value="ALL">All 6 Wards (154 PUs)</option>
+    <option value="Amar">Amar Ward</option>
+    <option value="Andamin">Andamin Ward</option>
+    <option value="Bachama">Bachama Ward</option>
+    <option value="Darofai">Darofai Ward</option>
+    <option value="Didango">Didango Ward ⭐</option>
+    <option value="Kwanchi">Kwanchi Ward</option>
+  </select>
+  <button onclick="exportCsv()">Export CSV</button>
+  <button onclick="fetchResults()">Refresh</button>
+</div>
+
+<div class="section">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <div><small>Constituency total</small><h2>Votes by party</h2></div>
+    <div class="badge" id="leadingBadge">● No results yet</div>
+  </div>
+  <div id="topPartiesGrid" style="margin-top:12px;"></div>
+  <div class="candidate">
+    <img src="/anas.jpg" onerror="this.style.display='none'" alt="Hon. Anas Didango">
+    <div><b>Hon. Anas Shuaibu Didango</b><span>APC • Candidate for Member, Karim II Constituency</span><span style="color:#0A3B2E;font-weight:700;margin-top:2px;" id="leadText2">Waiting for results...</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <small>Ward Breakdown</small>
+  <h2 style="font-size:18px;margin-top:4px;">Tap a ward to filter results</h2>
+  <div class="ward-grid" id="wardSummaryGrid"></div>
+  <p style="font-size:11px;color:#888;margin-top:8px;">■ Green = Leading Party &nbsp; ■ Gold Border = Home Ward (Didango)</p>
+</div>
+
+<div class="section">
+  <small>Visual Analytics</small>
+  <h2 style="font-size:18px;">Vote Share & Ward Turnout</h2>
+  <div id="donutWrap"></div>
+  <div id="wardBarsWrap" style="margin-top:14px;"></div>
+  <p id="chartEmpty" style="text-align:center;color:#999;font-size:13px;margin-top:10px;">Charts will appear after first PU is submitted.</p>
+</div>
+
+<div class="section" id="puSection">
+  <small>Polling Unit Feed</small>
+  <h2 style="font-size:18px;">Polling Unit Feed (154 Total Units)</h2>
+  <p style="font-size:12px;color:#777;margin-top:4px;">Tap any unit row to inspect full party breakdown & EC8A photo evidence</p>
+  <div id="filterBanner" class="filter-banner">Filtered: <span id="filterBannerText"></span><button onclick="clearWardFilter()">Show All</button></div>
+  <input type="text" id="searchInput" onkeyup="filterResults()" placeholder="Search PU Code or Ward Name..." style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;margin-top:10px;">
+  <div id="resultsAccordionContainer"></div>
+</div>
+
+<div class="footer">Karim II Collation Centre • Data from Accredited Party Agents • Not an Official INEC Declaration • © 2026 • Updated <span id="updated">Just now</span></div>
+
+<div id="imageModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#fff;border-radius:14px;max-width:600px;width:100%;padding:16px;">
+    <div style="display:flex;justify-content:space-between;"><b id="modalPuTitle">EC8A Sheet</b><button onclick="closeModal()">✕</button></div>
+    <p id="modalHashText" style="font-size:11px;color:#555;"></p>
+    <img id="modalImage" style="width:100%;max-height:60vh;object-fit:contain;margin-top:10px;">
+    <div style="text-align:right;margin-top:10px;"><button onclick="closeModal()" style="background:#0A3B2E;color:#fff;padding:8px 14px;border-radius:8px;border:none;">Close</button></div>
+  </div>
+</div>
+
+<script>
+let cachedGlobalData=[];
+let puVisible = 10;
+let otherPartiesOpen=false;
+const BACKEND_URL=window.location.origin;
+const PARTIES = {
+  'APC':  {name:'All Progressives Congress', logo:'logos/APC.png'},
+  'PDP':  {name:'Peoples Democratic Party', logo:'logos/PDP.png'},
+  'LP':   {name:'Labour Party', logo:'logos/LP.png'},
+  'NNPP': {name:'New Nigeria Peoples Party', logo:'logos/NNPP.png'},
+  'ADC':  {name:'African Democratic Congress', logo:'logos/ADC.png'},
+  'APGA': {name:'All Progressives Grand Alliance', logo:'logos/APGA.png'},
+  'SDP':  {name:'Social Democratic Party', logo:'logos/SDP.png'},
+  'YPP':  {name:'Young Progressives Party', logo:'logos/YPP.png'},
+  'AAC':  {name:'African Action Congress', logo:'logos/AAC.png'},
+  'ADP':  {name:'Action Democratic Party', logo:'logos/ADP.png'},
+  'PRP':  {name:'Peoples Redemption Party', logo:'logos/PRP.png'},
+  'ZLP':  {name:'Zenith Labour Party', logo:'logos/ZLP.png'},
+  'APP':  {name:'Action Peoples Party', logo:'logos/APP.png'},
+  'APM':  {name:'Allied Peoples Movement', logo:'logos/APM.png'},
+  'AA':   {name:'Action Alliance', logo:'logos/AA.png'},
+  'A':    {name:'Accord', logo:'logos/A.png'},
+  'NRM':  {name:'National Rescue Movement', logo:'logos/NRM.png'},
+  'BP':   {name:'Boot Party', logo:'logos/BP.png'},
+};
+function partyFullName(code){ return (PARTIES[code] && PARTIES[code].name) ? PARTIES[code].name : code; }
+function partyLogoHtml(code){
+  const info = PARTIES[code];
+  if(!info || !info.logo) return '<div class="party-logo-fallback">'+code+'</div>';
+  return '<img class="party-logo" src="'+info.logo+'" alt="'+code+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="party-logo-fallback" style="display:none">'+code+'</div>';
+}
+async function fetchResults(){
+  try{
+    const r=await fetch(BACKEND_URL+'/results?constituency=Karim II&t='+Date.now());
+    const d=await r.json();
+    cachedGlobalData=d.results||[];
+  }catch(e){ cachedGlobalData=[]; }
+  renderDashboard(cachedGlobalData);
+}
+function filterResults(){ puVisible = 10; renderDashboard(cachedGlobalData); }
+function showMorePUs(){ puVisible += 10; renderDashboard(cachedGlobalData); }
+function onWardDropdownChange(){ filterResults(); document.getElementById('puSection').scrollIntoView({behavior:'smooth'}); }
+function selectWard(w){
+  document.getElementById('wardFilter').value=w;
+  filterResults();
+  setTimeout(function(){ document.getElementById('puSection').scrollIntoView({behavior:'smooth', block:'start'}); }, 50);
+}
+function clearWardFilter(){
+  document.getElementById('wardFilter').value='ALL';
+  document.getElementById('searchInput').value='';
+  filterResults();
+}
+function exportCsv(){ window.open(BACKEND_URL+'/export/csv?constituency=Karim II','_blank'); }
+function openModal(url,pu){
+  document.getElementById('modalImage').src=url;
+  document.getElementById('modalPuTitle').innerText='EC8A Sheet — PU #'+pu;
+  document.getElementById('imageModal').style.display='flex';
+}
+function closeModal(){ document.getElementById('imageModal').style.display='none'; }
+function toggleDropdown(i){
+  const el=document.getElementById('dropdown_'+i);
+  el.style.display = el.style.display==='block' ? 'none' : 'block';
+}
+function toggleOtherParties(){
+  otherPartiesOpen = !otherPartiesOpen;
+  const el=document.getElementById('otherParties');
+  const btn=document.getElementById('otherPartiesBtn');
+  if(!el || !btn) return;
+  if(otherPartiesOpen){ el.style.display='block'; btn.innerText='▲ Hide remaining parties'; }
+  else { el.style.display='none'; btn.innerText='▼ Show remaining parties'; }
+}
+function partyRow(p,v,totalVotes){
+  let pPct= totalVotes? (v/totalVotes*100).toFixed(1):0;
+  return '<div class="party">'+partyLogoHtml(p)+'<div class="party-info"><div class="party-name"><b>'+p+'</b><small>'+partyFullName(p)+'</small></div><div class="bar"><div style="width:'+pPct+'%"></div></div></div><div style="text-align:right;"><b>'+v.toLocaleString()+'</b><br><span style="font-size:12px;color:#777;">'+pPct+'%</span></div></div>';
+}
+function renderDashboard(resultsArray){
+  const ward=document.getElementById('wardFilter').value;
+  const kw=document.getElementById('searchInput').value.toLowerCase().trim();
+  const filtered=resultsArray.filter(function(r){
+    const mw = ward==='ALL' || (r.ward && r.ward.includes(ward));
+    const ms = !kw || (r.pu_id && String(r.pu_id).toLowerCase().includes(kw)) || (r.ward && r.ward.toLowerCase().includes(kw));
+    return mw && ms;
+  });
+  let totals={}, totalVotes=0;
+  resultsArray.forEach(function(x){
+    const scores=x.scores||{};
+    for(let p in scores){ let v=scores[p]; if(v>0){ totals[p]=(totals[p]||0)+v; totalVotes+=v; } }
+  });
+  let totalRejected=0;
+  resultsArray.forEach(function(x){ totalRejected += (x.rejected_votes||0); });
+  let totalCounted=totalVotes+totalRejected;
+  document.getElementById('heroPUs').textContent=resultsArray.length;
+  document.getElementById('heroTotalVotes').textContent=totalCounted.toLocaleString();
+  let pct=(resultsArray.length/154*100).toFixed(1);
+  document.getElementById('heroProgressBar').style.width=pct+'%';
+  document.getElementById('heroProgressText').textContent=resultsArray.length+' / 154 PUs - '+pct+'% Reported';
+  let parties=[];
+  for(let p in totals){ if(totals[p]>0) parties.push([p,totals[p]]); }
+  parties.sort(function(a,b){ return b[1]-a[1]; });
+  if(parties.length===0){
+    document.getElementById('leadingBadge').textContent='● No results yet';
+    document.getElementById('heroLeaderText').textContent='Waiting for first result...';
+    document.getElementById('leadText2').textContent='Waiting for results...';
+    document.getElementById('topPartiesGrid').innerHTML='<div style="padding:16px;text-align:center;color:#999;">No results yet. Submit first PU from Situation Room.</div>';
+  } else {
+    let leader=parties[0][0], leaderVotes=parties[0][1];
+    let secondVotes=parties[1]?parties[1][1]:0;
+    let diff=leaderVotes-secondVotes;
+    let leaderPct= totalVotes? (leaderVotes/totalVotes*100).toFixed(1):0;
+    var leaderLogo = (PARTIES[leader] && PARTIES[leader].logo) ? PARTIES[leader].logo : '';
+    var leaderLogoHtml = leaderLogo ? '<img src="'+leaderLogo+'" style="width:22px;height:22px;object-fit:contain;background:#fff;border-radius:50%;vertical-align:middle;margin-right:4px;" onerror="this.style.display=\'none\'">' : '';
+    document.getElementById('leadingBadge').innerHTML = leaderLogoHtml + '● ' + leader + ' leading';
+    document.getElementById('heroLeaderText').textContent=leader+' is Leading + '+diff.toLocaleString()+' votes ahead ('+leaderPct+'%)';
+    document.getElementById('leadText2').textContent=leader+' is Leading + '+diff.toLocaleString()+' votes';
+    let top3=parties.slice(0,3);
+    let rest=parties.slice(3);
+    let html='';
+    top3.forEach(function(e){ html += partyRow(e[0], e[1], totalVotes); });
+    if(rest.length>0){
+      let restHtml='';
+      rest.forEach(function(e){ restHtml += partyRow(e[0], e[1], totalVotes); });
+      let btnText = otherPartiesOpen ? '▲ Hide remaining parties' : '▼ Show remaining parties ('+rest.length+')';
+      let disp = otherPartiesOpen ? 'block' : 'none';
+      html += '<button type="button" id="otherPartiesBtn" class="show-more" onclick="toggleOtherParties()">'+btnText+'</button>';
+      html += '<div id="otherParties" style="display:'+disp+';">'+restHtml+'</div>';
+    }
+    document.getElementById('topPartiesGrid').innerHTML=html;
+  }
+  let wardData={};
+  ['Amar','Andamin','Bachama','Darofai','Didango','Kwanchi'].forEach(function(w){ wardData[w]={total:0, apc:0, count:0}; });
+  resultsArray.forEach(function(x){
+    let w=x.ward||'';
+    if(w.indexOf('Didango')!==-1) w='Didango';
+    if(!wardData[w]) wardData[w]={total:0, apc:0, count:0};
+    wardData[w].total += x.total_votes||0;
+    wardData[w].apc += (x.scores && x.scores.APC ? x.scores.APC : 0);
+    wardData[w].count += 1;
+  });
+  let wardHtml='';
+  for(let name in wardData){
+    let d=wardData[name];
+    let label = name==='Didango' ? 'Didango ⭐ Home Ward' : name;
+    let isActive = (ward===name);
+    let cls = isActive ? 'active' : '';
+    let style = '';
+    if(name==='Didango') style='border:2px solid #D4A017;';
+    if(isActive) style='border:3px solid #D4A017;';
+    wardHtml += '<button type="button" class="'+cls+'" onclick="selectWard(\''+name+'\')" style="'+style+'"><b>'+label+'</b><span>'+d.count+' PUs • '+d.total.toLocaleString()+' votes • APC: '+d.apc.toLocaleString()+'</span></button>';
+  }
+  document.getElementById('wardSummaryGrid').innerHTML=wardHtml;
+  renderCharts(parties, wardData, totalVotes);
+  const banner=document.getElementById('filterBanner');
+  if(ward!=='ALL'){
+    banner.style.display='block';
+    document.getElementById('filterBannerText').textContent=ward+' • '+filtered.length+' PU(s) shown';
+  } else if(kw){
+    banner.style.display='block';
+    document.getElementById('filterBannerText').textContent='Search: "'+kw+'" • '+filtered.length+' PU(s) shown';
+  } else {
+    banner.style.display='none';
+  }
+  const c=document.getElementById('resultsAccordionContainer');
+  if(filtered.length===0){
+    c.innerHTML='<div style="padding:20px;text-align:center;color:#999;">No polling unit records found for this ward.</div>';
+  } else {
+    let out='';
+    let shown = filtered.slice(0, puVisible);
+    shown.forEach(function(res,i){
+      let sorted=[];
+      for(let p in (res.scores||{})){ if(res.scores[p]>0) sorted.push([p,res.scores[p]]); }
+      sorted.sort(function(a,b){ return b[1]-a[1]; });
+      let lead=sorted.length? sorted[0][0]+' ('+sorted[0][1]+'v)' : 'None';
+      let rows='';
+      sorted.forEach(function(e){ rows += '<div style="display:flex;justify-content:space-between;align-items:center;background:#fff;padding:6px 8px;border:1px solid #eee;border-radius:6px;"><span style="display:flex;align-items:center;gap:8px;"><img src="'+(PARTIES[e[0]]?PARTIES[e[0]].logo:'')+'" style="width:28px;height:28px;object-fit:contain;" onerror="this.style.display=\'none\'"><span><b>'+e[0]+'</b> <span style="font-size:11px;color:#777;">'+partyFullName(e[0])+'</span></span></span><b style="color:#0A3B2E;">'+e[1].toLocaleString()+' votes</b></div>'; });
+      let photoBtn = res.photo_url ? '<button onclick="openModal(\''+res.photo_url+'\',\''+res.pu_id+'\')" style="background:#0A3B2E;color:#fff;padding:8px 12px;border-radius:8px;border:none;margin-top:8px;">View EC8A Photo</button>' : '<span style="font-size:12px;color:#999;">No EC8A photo</span>';
+      out += '<div class="pu" onclick="toggleDropdown('+i+')"><b>PU #'+res.pu_id+' - '+(res.ward||'')+'</b><p>BVAS: '+res.bvas_accredited+' | Total: '+res.total_votes+' (Rej: '+res.rejected_votes+') • Leading: '+lead+'</p><div id="dropdown_'+i+'" class="pu-detail"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">'+rows+'</div><div style="margin-top:8px;">'+photoBtn+'</div><div style="font-size:11px;color:#888;margin-top:6px;">Logged: '+new Date(res.timestamp).toLocaleTimeString()+'</div></div></div>';
+    });
+    if(filtered.length > puVisible){
+      out += '<button class="show-more" onclick="showMorePUs()">▼ Show More PUs (' + (filtered.length - puVisible) + ' remaining)</button>';
+    } else if(filtered.length > 10){
+      out += '<div style="text-align:center;padding:12px;color:#888;font-size:13px;">All ' + filtered.length + ' PUs shown</div>';
+    }
+    c.innerHTML=out;
+  }
+  document.getElementById('updated').textContent=new Date().toLocaleTimeString();
+}
+function renderCharts(parties, wardData, totalVotes){
+  if(!parties || parties.length===0){
+    document.getElementById('chartEmpty').style.display='block';
+    document.getElementById('donutWrap').innerHTML='';
+    document.getElementById('wardBarsWrap').innerHTML='';
+    return;
+  }
+  document.getElementById('chartEmpty').style.display='none';
+  let top3=parties.slice(0,3);
+  let others=0;
+  for(let i=3;i<parties.length;i++){ others+=parties[i][1]; }
+  let items=[];
+  let colors=['#0A3B2E','#D4A017','#64748b','#e2e8f0'];
+  top3.forEach(function(p){ items.push({label:p[0], val:p[1]}); });
+  if(others>0) items.push({label:'Others', val:others});
+  let p1 = items[0] ? items[0].val/totalVotes*360 : 0;
+  let p2 = items[1] ? items[1].val/totalVotes*360 : 0;
+  let p3 = items[2] ? items[2].val/totalVotes*360 : 0;
+  let grad='conic-gradient(';
+  grad += colors[0]+' 0deg '+p1+'deg, ';
+  grad += colors[1]+' '+p1+'deg '+(p1+p2)+'deg, ';
+  grad += colors[2]+' '+(p1+p2)+'deg '+(p1+p2+p3)+'deg, ';
+  grad += colors[3]+' '+(p1+p2+p3)+'deg 360deg)';
+  let donutHtml='<div class="donut" style="background:'+grad+'"></div><div class="legend">';
+  items.forEach(function(it, idx){
+    let pct=(it.val/totalVotes*100).toFixed(1);
+    donutHtml += '<div><span style="background:'+colors[idx]+'"></span>'+it.label+' '+pct+'%</div>';
+  });
+  donutHtml += '</div>';
+  document.getElementById('donutWrap').innerHTML=donutHtml;
+  let maxWard=1;
+  for(let w in wardData){ if(wardData[w].total>maxWard) maxWard=wardData[w].total; }
+  let barsHtml='';
+  for(let w in wardData){
+    let pct = maxWard ? (wardData[w].total/maxWard*100) : 0;
+    barsHtml += '<div class="wbar"><div class="wbar-label"><span>'+w+'</span><span>'+wardData[w].total.toLocaleString()+' votes</span></div><div class="wbar-track"><div class="wbar-fill" style="width:'+pct+'%"></div></div></div>';
+  }
+  document.getElementById('wardBarsWrap').innerHTML=barsHtml;
+}
+setTimeout(function(){ var s=document.getElementById('splash'); if(s) s.classList.add('hide'); }, 2000);
+fetchResults();
+setInterval(fetchResults,60000);
+</script>
+</body>
+</html>
