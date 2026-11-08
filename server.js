@@ -1,40 +1,36 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { Pool } = require('pg');
 
 const PORT = process.env.PORT || 5000;
 
-// Connect to Render Postgres - karim2-db
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
-});
+// --- FILE STORAGE - NO DATABASE ---
+// Results are saved to results.json in the same folder
+// Later we can add database back without changing logic
+const DATA_FILE = path.join(__dirname, 'results.json');
 
-async function initDb() {
+function loadResults() {
   try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS results (
-        id SERIAL PRIMARY KEY,
-        pu_id TEXT,
-        constituency TEXT,
-        ward TEXT,
-        bvas_accredited INT DEFAULT 0,
-        rejected_votes INT DEFAULT 0,
-        scores JSONB DEFAULT '{}',
-        total_votes INT DEFAULT 0,
-        photo_url TEXT,
-        is_over_voting BOOLEAN DEFAULT false,
-        forensic_flags TEXT[] DEFAULT '{}',
-        timestamp TIMESTAMPTZ DEFAULT NOW()
-      );
-    `);
-    console.log('[DB] Table ready');
+    if (!fs.existsSync(DATA_FILE)) return [];
+    const raw = fs.readFileSync(DATA_FILE, 'utf8');
+    if (!raw.trim()) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (e) {
-    console.error('[DB] Init failed:', e.message);
+    console.error('[FILE] Load failed:', e.message);
+    return [];
   }
 }
-initDb();
+
+function saveResults(results) {
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(results, null, 2));
+  } catch (e) {
+    console.error('[FILE] Save failed:', e.message);
+  }
+}
+
+console.log('[FILE] Storage ready - using results.json, no database needed');
 
 const parseUrl = (reqUrl) => {
   const parsed = new URL(reqUrl, `http://localhost:${PORT}`);
@@ -242,10 +238,25 @@ const server = http.createServer((req, res) => {
           forensicFlags.push("HIGH_REJECTION_RATE_ANOMALY");
         }
 
-        const insert = await pool.query(
-          `INSERT INTO results (pu_id, constituency, ward, bvas_accredited, rejected_votes, scores, total_votes, photo_url, is_over_voting, forensic_flags) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id`,
-          [pu_id, constituency, ward, bvas_accredited, rejected_votes, JSON.stringify(scores), absoluteTotalVotes, photo_url, isOverVoting, forensicFlags]
-        );
+        // --- FILE INSERT (replaces pool.query INSERT) ---
+        const allResults = loadResults();
+        const newId = allResults.length > 0 ? Math.max(...allResults.map(r => r.id || 0)) + 1 : 1;
+        const newRecord = {
+          id: newId,
+          pu_id,
+          constituency,
+          ward,
+          bvas_accredited,
+          rejected_votes,
+          scores,
+          total_votes: absoluteTotalVotes,
+          photo_url,
+          is_over_voting: isOverVoting,
+          forensic_flags: forensicFlags,
+          timestamp: new Date().toISOString()
+        };
+        allResults.push(newRecord);
+        saveResults(allResults);
 
         console.log(`[SUCCESS] Result logged for PU ID: ${pu_id} [Ward: ${ward}] | Total Votes: ${absoluteTotalVotes}`);
 
@@ -253,7 +264,7 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({
           status: 'success',
           message: 'Result collated successfully.',
-          record_id: insert.rows[0].id
+          record_id: newRecord.id
         }));
       } catch (err) {
         console.error("Submission Error:", err);
@@ -266,14 +277,12 @@ const server = http.createServer((req, res) => {
     (async () => {
       try {
         const constituencyQuery = searchParams.get('constituency');
-        let q = 'SELECT * FROM results ORDER BY id ASC';
-        let params = [];
+        let results = loadResults();
         if (constituencyQuery) {
-          q = 'SELECT * FROM results WHERE LOWER(constituency) = LOWER($1) ORDER BY id ASC';
-          params = [constituencyQuery];
+          results = results.filter(r => (r.constituency || '').toLowerCase() === constituencyQuery.toLowerCase());
         }
-        const { rows } = await pool.query(q, params);
-        const results = rows.map(r => ({
+        // Keep same shape as DB version
+        results = results.map(r => ({
           id: r.id,
           pu_id: r.pu_id,
           constituency: r.constituency,
@@ -298,7 +307,7 @@ const server = http.createServer((req, res) => {
   else if (req.method === 'GET' && pathname === '/export/csv') {
     (async () => {
       try {
-        const { rows } = await pool.query('SELECT * FROM results ORDER BY id ASC');
+        const rows = loadResults();
         let csvHeader = "ID,PU_ID,Constituency,Ward,BVAS_Accredited,Total_Votes,Rejected,Over_Voting,Photo_URL,Forensic_Flags,Timestamp\n";
         let csvRows = rows.map(r =>
           `${r.id},${r.pu_id},"${r.constituency || 'Karim II'}","${r.ward}",${r.bvas_accredited},${r.total_votes},${r.rejected_votes},${r.is_over_voting},"${r.photo_url || ''}","${(r.forensic_flags || []).join(';')}",${r.timestamp}`
